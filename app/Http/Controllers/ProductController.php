@@ -82,14 +82,8 @@ class ProductController extends Controller
             ->join('products', 'carts.product_id', '=', 'products.id')
             ->where('carts.user_id', $user_id)
             ->sum('products.price');
-    
-            if($total > 0) {
-                return view('ordernow', ["total"=>$total]);
-            } else {
-                return view('error', ["message"=>"Your Orders are Empty!"]);
-            }
-        } else {
-            return view('error', ["message"=>"Your Orders are Empty!"]);
+
+            return view('ordernow', ["total"=>$total]);
         }
     }
 
@@ -109,5 +103,19 @@ class ProductController extends Controller
             Cart::where('user_id', $user_id)->delete();
         }
         return redirect('/');
+    }
+
+    function myOrders() {
+        if(Session::has("user")) {
+            $user_id = Session::get("user")['id'];
+            $orders = DB::table('orders')
+            ->join('products', 'orders.product_id', '=', 'products.id')
+            ->where('orders.user_id', $user_id)
+            ->get();
+
+            return view('myorders', ["orders"=>$orders]);
+        } else {
+            return view('error', ["message"=>"Order is Empty!"]);
+        }
     }
 }
