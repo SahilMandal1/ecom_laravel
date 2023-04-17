@@ -24,9 +24,9 @@
       <td>{{$item->price}}/-</td>
       <td><img src="{{$item->gallery}}" alt="" style="width:5rem"></td>
       <td>
-        <button class="btn btn-warning btn-sm">Edit</button>
+        <a class="btn btn-warning btn-sm">Edit</a>
       </td>
-      <td><button class="btn btn-danger btn-sm">Delete</button></td>
+      <td><a href="/removecart/{{$item->cart_id}}" class="btn btn-danger btn-sm">Remove</a></td>
     </tr>
     @endforeach
   </tbody>
