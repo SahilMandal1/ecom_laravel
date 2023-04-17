@@ -2,7 +2,8 @@
 @section('content')
 
 <div class="container mt-5">
-    <h4 class="mb-3 text-success">Result for Product</h4>
+    <h4 class="mb-2 text-success">Result for Product</h4>
+    <a href="/ordernow" class="btn btn-success mb-4">Order Now</a>
 <table class="table table-bordered text-center">
   <thead>
     <tr>
@@ -11,7 +12,7 @@
       <th scope="col">Description</th>
       <th scope="col">Price</th>
       <th scope="col">Image</th>
-      <th scope="col" colspan="2">Action</th>
+      <th scope="col">Action</th>
     </tr>
   </thead>
   <tbody>
@@ -23,9 +24,6 @@
       <td>{{$item->description}}</td>
       <td>{{$item->price}}/-</td>
       <td><img src="{{$item->gallery}}" alt="" style="width:5rem"></td>
-      <td>
-        <a class="btn btn-warning btn-sm">Edit</a>
-      </td>
       <td><a href="/removecart/{{$item->cart_id}}" class="btn btn-danger btn-sm">Remove</a></td>
     </tr>
     @endforeach

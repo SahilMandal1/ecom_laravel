@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Cart;
+use App\Models\Order;
 use Session;
 use Illuminate\Support\Facades\DB;
 
@@ -72,5 +73,41 @@ class ProductController extends Controller
     function removeCart($id) {
         Cart::destroy($id);
         return redirect('cartlist');
+    }
+
+    function orderNow() {
+        if(Session::has("user")) {
+            $user_id = Session::get("user")['id'];
+            $total = $products = DB::table('carts')
+            ->join('products', 'carts.product_id', '=', 'products.id')
+            ->where('carts.user_id', $user_id)
+            ->sum('products.price');
+    
+            if($total > 0) {
+                return view('ordernow', ["total"=>$total]);
+            } else {
+                return view('error', ["message"=>"Your Orders are Empty!"]);
+            }
+        } else {
+            return view('error', ["message"=>"Your Orders are Empty!"]);
+        }
+    }
+
+    function orderPlace(Request $req) {
+        $user_id = Session::get('user')['id'];
+        $allcart = Cart::where('user_id', $user_id)->get();
+
+        foreach($allcart as $cart) {
+            $order = new Order;
+            $order->product_id = $cart['product_id'];
+            $order->user_id = $cart['user_id'];
+            $order->status = "pending";
+            $order->payment_method = $req->payment;
+            $order->payment_status = "pending";
+            $order->address = $req->address;
+            $order->save();
+            Cart::where('user_id', $user_id)->delete();
+        }
+        return redirect('/');
     }
 }
